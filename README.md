@@ -1,7 +1,7 @@
 # assignments
 - LAB 2 (11-Apr-2023)
     - Topic: Databases
-    - Short description: During this session we will be discussing about storing our data foe our application. We will focus mostly on relational database. We will learn how we can design our relational database and we will create our own database project for the application which will store our main data.
+    - Short description: During this session we will be discussing about storing our data for our application. We will focus mostly on relational databases. We will learn how we can design our relational database and we will create our own database project for the application which will store our main data.
     - !IMPORTANT! Please have the following prerequisites installed before this sessions:
         1. Visual Studio 2022 
             a. Yes, it is important that you have 2022 installed for future sessions :D
