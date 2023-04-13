@@ -1,4 +1,9 @@
 # assignments
+- LAB 1 (03-Apr-2023)
+    - Topic : Describing the theme and short introduction in WebApplications, HTTP context and C# 
+    - Tools required: 
+        Visual Studio Code: https://code.visualstudio.com/download
+        Visual Studio Community edition: https://visualstudio.microsoft.com/downloads/
 - LAB 2 (11-Apr-2023)
     - Topic: Databases
     - Short description: During this session we will be discussing about storing our data for our application. We will focus mostly on relational databases. We will learn how we can design our relational database and we will create our own database project for the application which will store our main data.
