@@ -1,10 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Calendaurus.Models.Models;
 
+[Table("TheoreticalLesson")]
+[Index("DisciplineId", Name = "UK_TheoreticalLesson_DisciplineId", IsUnique = true)]
 public partial class TheoreticalLesson
 {
+    [Key]
     public long Id { get; set; }
 
     public long DisciplineId { get; set; }
@@ -14,7 +20,10 @@ public partial class TheoreticalLesson
     /// </summary>
     public string? Description { get; set; }
 
+    [ForeignKey("DisciplineId")]
+    [InverseProperty("TheoreticalLesson")]
     public virtual Discipline Discipline { get; set; } = null!;
 
+    [InverseProperty("TheoreticalLesson")]
     public virtual ICollection<TheoreticalLessonEvent> TheoreticalLessonEvents { get; set; } = new List<TheoreticalLessonEvent>();
 }

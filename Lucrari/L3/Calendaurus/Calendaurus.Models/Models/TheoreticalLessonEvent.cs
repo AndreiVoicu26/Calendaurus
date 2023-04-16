@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Calendaurus.Models.Models;
 
+[Table("TheoreticalLessonEvent")]
 public partial class TheoreticalLessonEvent
 {
+    [Key]
     public long Id { get; set; }
 
     public long TheoreticalLessonId { get; set; }
 
     public long ProfessorId { get; set; }
 
+    [StringLength(20)]
     public string DayOfWeek { get; set; } = null!;
 
     public TimeSpan StartTime { get; set; }
@@ -24,7 +30,11 @@ public partial class TheoreticalLessonEvent
 
     public byte? MaximumSize { get; set; }
 
+    [ForeignKey("TheoreticalLessonId")]
+    [InverseProperty("TheoreticalLessonEvents")]
     public virtual TheoreticalLesson TheoreticalLesson { get; set; } = null!;
 
+    [ForeignKey("TheoreticalLessonEvenId")]
+    [InverseProperty("TheoreticalLessonEvens")]
     public virtual ICollection<Student> Students { get; set; } = new List<Student>();
 }
