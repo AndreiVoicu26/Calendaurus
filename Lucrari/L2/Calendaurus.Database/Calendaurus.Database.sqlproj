@@ -59,11 +59,20 @@
     <Folder Include="Tables" />
     <Folder Include="Tables\Personas" />
     <Folder Include="Tables\Identity" />
+    <Folder Include="Tables\Discipline" />
+    <Folder Include="Tables\Events" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tables\Identity\User.sql" />
     <Build Include="Tables\Personas\Student.sql" />
     <Build Include="Tables\Personas\Professor.sql" />
     <Build Include="Tables\Personas\SysAdmin.sql" />
+    <Build Include="Tables\Discipline\Discipline.sql" />
+    <Build Include="Tables\Discipline\PracticalLesson.sql" />
+    <Build Include="Tables\Discipline\TheoreticalLesson.sql" />
+    <Build Include="Tables\Events\PracticalLessonEvent.sql" />
+    <Build Include="Tables\Events\PracticalLessonEvent_Student_Attendance.sql" />
+    <Build Include="Tables\Events\TheoreticalLessonEvent.sql" />
+    <Build Include="Tables\Events\TheoreticalLessonEvent_Student_Attendance.sql" />
   </ItemGroup>
 </Project>
