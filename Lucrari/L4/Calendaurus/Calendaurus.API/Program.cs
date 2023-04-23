@@ -1,3 +1,4 @@
+using Calendaurus.API.Middlewares;
 using Calendaurus.Models.Models;
 using Calendaurus.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -78,6 +79,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseMiddleware<CalendaurusAuthorizationMiddleware>();
 app.UseAuthorization();
 
 app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());

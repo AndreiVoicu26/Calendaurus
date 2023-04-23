@@ -1,11 +1,13 @@
 ﻿using Calendaurus.API.Requests;
 using Calendaurus.Models.Models;
 using Calendaurus.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Calendaurus.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("[controller]")]
     public class StudentsController : ControllerBase
