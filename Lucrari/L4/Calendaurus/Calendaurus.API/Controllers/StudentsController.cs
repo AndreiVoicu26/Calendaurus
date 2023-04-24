@@ -21,6 +21,37 @@ namespace Calendaurus.API.Controllers
             _disciplineService = disciplineService;
         }
 
+        [HttpGet("disciplines")]
+        public async Task<IActionResult> GetStudentDisciplines()
+        {
+            return Ok();
+        }
+
+        [HttpGet("practical")]
+        public async Task<IActionResult> GetStudentPracticalLabs()
+        {
+            return Ok();
+        }
+
+        [HttpGet("enrollments")]
+        public async Task<IActionResult> GetStudentPracticalLabEnrollments()
+        {
+            return Ok();
+        }
+
+        [HttpPost("enrollments")]
+        public async Task<IActionResult> CreateStudentPracticalLabEnrollment([FromBody] EnrollStudentRequest request)
+        {
+            return Ok();
+        }
+
+        [HttpDelete("enrollments/{practicalLessonEventId}")]
+        public async Task<IActionResult> DeleteStudentPracticalLabEnrollment(long practicalLessonEventId)
+        {
+            return Ok();
+        }
+
+        #region old endpoints
         [HttpGet("{studentId}/disciplines")]
         public async Task<IActionResult> GetStudentDisciplines(long studentId)
         {
@@ -80,5 +111,6 @@ namespace Calendaurus.API.Controllers
                 return BadRequest();
             }
         }
+        #endregion
     }
 }
