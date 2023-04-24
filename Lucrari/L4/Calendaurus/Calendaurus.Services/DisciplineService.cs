@@ -27,32 +27,49 @@ namespace Calendaurus.Services
             return discipline;
         }
 
-        public async Task<bool> EnrollStudentToPracticalLessonEvent(long studentId, long practicalLessonEventId)
+        public async Task<bool> EnrollStudentToPracticalLessonEventAsync(Student student, long practicalLessonEventId)
         {
-            var practicalLesson = await _context.PracticalLessonEvents.FirstOrDefaultAsync(u => u.Id == practicalLessonEventId);
+            if (student is null)
+            {
+                return false;
+            }
+
+            var practicalLesson = await _context.PracticalLessonEvents
+                .Include(e => e.PracticalLesson)
+                .ThenInclude(l => l.Discipline)
+                .FirstOrDefaultAsync(u => u.Id == practicalLessonEventId);
+
             if (practicalLesson != null) 
             {
-                var student = await _context.Students.FirstOrDefaultAsync(s => s.Id == studentId);
-                if (student != null)
+                if (practicalLesson.PracticalLesson.Discipline.Year != student.Year)
                 {
-                    practicalLesson.Students.Add(student);
-                    await _context.SaveChangesAsync();
-                    return true;
-                }                
+                    return false;
+                }
+
+                practicalLesson.Students.Add(student);
+                await _context.SaveChangesAsync();
+                return true;                
             }
 
             return false;
         }
 
-        public async Task<bool> RemoveStudentEnrollment(long studentId, long enrollmentId)
+        public async Task<bool> RemoveStudentEnrollment(Student student, long practicalLessonId)
         {
-            var practicalLesson = await _context.PracticalLessonEvents.FirstOrDefaultAsync(u => u.Id == enrollmentId);
+            if (student is null)
+            {
+                return false;
+            }
+
+            var practicalLesson = await _context.PracticalLessonEvents
+                .Include(p => p.Students)
+                .FirstOrDefaultAsync(u => u.Id == practicalLessonId);
+
             if (practicalLesson != null)
             {
-                var studentEnrollment = practicalLesson.Students.Where(s => s.Id == studentId).FirstOrDefault();
-                if (studentEnrollment != null)
+                if (practicalLesson.Students.Any(s => s.Id == student.Id))
                 {
-                    practicalLesson.Students.Remove(studentEnrollment);
+                    practicalLesson.Students.Remove(student);
                     await _context.SaveChangesAsync();
                     return true;
                 }

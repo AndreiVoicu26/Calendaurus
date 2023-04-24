@@ -6,7 +6,7 @@ namespace Calendaurus.Services
     {
         Task<Discipline> CreateDiscipline(string name, string faculty, int year);
         Task<Discipline?> UpdateDiscipline(long id, string name, string faculty, int year);
-        Task<bool> EnrollStudentToPracticalLessonEvent(long studentId, long practicalLessonEventId);
-        Task<bool> RemoveStudentEnrollment(long studentId, long enrollmentId);
+        Task<bool> EnrollStudentToPracticalLessonEventAsync(Student student, long practicalLessonEventId);
+        Task<bool> RemoveStudentEnrollment(Student student, long enrollmentId);
     }
 }
