@@ -1,4 +1,6 @@
-﻿using Calendaurus.API.Requests;
+﻿using AutoMapper;
+using Calendaurus.API.Models;
+using Calendaurus.API.Requests;
 using Calendaurus.Models.Models;
 using Calendaurus.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -14,29 +16,33 @@ namespace Calendaurus.API.Controllers
     {
         private readonly CalendaurusContext _context;
         private readonly IDisciplineService _disciplineService;
+        private readonly IMapper _mapper;
 
-        public DisciplinesController(CalendaurusContext context, IDisciplineService disciplineService)
+        public DisciplinesController(CalendaurusContext context, IDisciplineService disciplineService, IMapper mapper)
         {
             _context = context;
             _disciplineService = disciplineService;
+            _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllDisciplines()
         {
-            var results = await _context.Disciplines.ToListAsync();
+            var disciplines = await _context.Disciplines.ToListAsync();
+            var results = disciplines.Select(d => _mapper.Map<DisciplineApiModel>(d));
             return Ok(results);
         }
 
         [HttpGet("{disciplineId}/practical")]
         public async Task<IActionResult> GetPracticalLessonsForDiscipline(long disciplineId)
         {
-            var results = await _context.PracticalLessons
+            var practicalLessons = await _context.PracticalLessons
                     .Include(u => u.PracticalLessonEvents)
                     .Where(u => u.DisciplineId == disciplineId)
                     .AsNoTracking()
                     .ToListAsync();
 
+            var results = practicalLessons.Select(p => _mapper.Map<PracticalLessonApiModel>(p));
             return Ok(results);
         }
 
@@ -46,7 +52,8 @@ namespace Calendaurus.API.Controllers
             var discipline = await _disciplineService.CreateDiscipline(request.Name, request.Faculty, request.Year);
             if (discipline != null)
             {
-                return Ok(discipline);
+                var result = _mapper.Map<DisciplineApiModel>(discipline);
+                return Ok(result);
             }
             else
             {
@@ -60,7 +67,8 @@ namespace Calendaurus.API.Controllers
             var discipline = await _disciplineService.UpdateDiscipline(disciplineId, request.Name, request.Faculty, request.Year);
             if (discipline != null)
             {
-                return Ok(discipline);
+                var result = _mapper.Map<DisciplineApiModel>(discipline);
+                return Ok(result);
             }
             else
             {

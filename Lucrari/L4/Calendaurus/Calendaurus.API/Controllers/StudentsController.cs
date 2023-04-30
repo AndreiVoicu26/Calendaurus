@@ -1,4 +1,6 @@
-﻿using Calendaurus.API.Requests;
+﻿using AutoMapper;
+using Calendaurus.API.Models;
+using Calendaurus.API.Requests;
 using Calendaurus.Models.Models;
 using Calendaurus.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -14,11 +16,13 @@ namespace Calendaurus.API.Controllers
     {
         private readonly CalendaurusContext _context;
         private readonly IDisciplineService _disciplineService;
+        private readonly IMapper _mapper;
 
-        public StudentsController(CalendaurusContext context, IDisciplineService disciplineService)
+        public StudentsController(CalendaurusContext context, IDisciplineService disciplineService, IMapper mapper)
         {
             _context = context;
             _disciplineService = disciplineService;
+            _mapper = mapper;
         }
 
         [HttpGet("disciplines")]
@@ -31,10 +35,11 @@ namespace Calendaurus.API.Controllers
 
             if (student is not null)
             {
-                var results = await _context.Disciplines
+                var disciplines = await _context.Disciplines
                 .Where(d => d.Year == student.Year)
                 .ToListAsync();
 
+                var results = disciplines.Select(_mapper.Map<DisciplineApiModel>);
                 return Ok(results);
             }
 
@@ -58,7 +63,8 @@ namespace Calendaurus.API.Controllers
                     .ToListAsync();
 
                 var practical = discipline.SelectMany(d => d.PracticalLessons);
-                return Ok(practical);
+                var results = practical.Select(_mapper.Map<PracticalLessonApiModel>);
+                return Ok(results);
             }
 
             return BadRequest();
@@ -77,11 +83,12 @@ namespace Calendaurus.API.Controllers
                 var enrolledStudent = await _context.Students
                     .Include(s => s.PracticalLessonEvens)
                     .ThenInclude(e => e.PracticalLesson)
-                    .ThenInclude(e => e.Discipline)
                     .Where(s => s.Id == student.Id)
                     .SingleOrDefaultAsync();
 
-                return Ok(enrolledStudent?.PracticalLessonEvens ?? Array.Empty<PracticalLessonEvent>());
+                var results = enrolledStudent.PracticalLessonEvens.Select(e => e.PracticalLesson).Select(_mapper
+                    .Map<PracticalLessonApiModel>);
+                return Ok(results);
             }
 
             return BadRequest();
