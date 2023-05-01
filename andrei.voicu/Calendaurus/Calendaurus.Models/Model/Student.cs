@@ -23,9 +23,9 @@ public partial class Student
 
     [ForeignKey("StudentId")]
     [InverseProperty("Students")]
-    public virtual ICollection<PracticalLessonEvent> PracticalLessonEvens { get; set; } = new List<PracticalLessonEvent>();
+    public virtual ICollection<PracticalLessonEvent> PracticalLessonEvents { get; set; } = new List<PracticalLessonEvent>();
 
     [ForeignKey("StudentId")]
     [InverseProperty("Students")]
-    public virtual ICollection<TheoreticalLessonEvent> TheoreticalLessonEvens { get; set; } = new List<TheoreticalLessonEvent>();
+    public virtual ICollection<TheoreticalLessonEvent> TheoreticalLessonEvents { get; set; } = new List<TheoreticalLessonEvent>();
 }

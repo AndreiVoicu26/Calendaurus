@@ -38,7 +38,7 @@ public partial class TheoreticalLessonEvent
     [InverseProperty("TheoreticalLessonEvents")]
     public virtual TheoreticalLesson TheoreticalLesson { get; set; } = null!;
 
-    [ForeignKey("TheoreticalLessonEvenId")]
-    [InverseProperty("TheoreticalLessonEvens")]
+    [ForeignKey("TheoreticalLessonEventId")]
+    [InverseProperty("TheoreticalLessonEvents")]
     public virtual ICollection<Student> Students { get; set; } = new List<Student>();
 }

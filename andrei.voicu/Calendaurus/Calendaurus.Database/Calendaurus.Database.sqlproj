@@ -75,4 +75,7 @@
     <Build Include="Tables\Personas\Proffesor.sql" />
     <Build Include="Tables\Personas\SysAdmin.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="Calendaurus.Database.refactorlog" />
+  </ItemGroup>
 </Project>

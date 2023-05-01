@@ -15,12 +15,12 @@ public partial class PracticalLesson
 
     public long DisciplineId { get; set; }
 
-    public byte Type { get; set; }
+    public string Type { get; set; } = null!;
 
     /// <summary>
     /// A short description on what the students will be doing at this practical lesson
     /// </summary>
-    public string? Description { get; set; }
+    public string Description { get; set; }
 
     [ForeignKey("DisciplineId")]
     [InverseProperty("PracticalLessons")]

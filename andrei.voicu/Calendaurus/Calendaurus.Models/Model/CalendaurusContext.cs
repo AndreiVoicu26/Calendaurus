@@ -60,7 +60,7 @@ public partial class CalendaurusContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PracticalLessonEvent_Professor");
 
-            entity.HasMany(d => d.Students).WithMany(p => p.PracticalLessonEvens)
+            entity.HasMany(d => d.Students).WithMany(p => p.PracticalLessonEvents)
                 .UsingEntity<Dictionary<string, object>>(
                     "PracticalLessonEventStudentAttendance",
                     r => r.HasOne<Student>().WithMany()
@@ -68,12 +68,12 @@ public partial class CalendaurusContext : DbContext
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK_PracticalLessonEvent_Student_Attendance_Student"),
                     l => l.HasOne<PracticalLessonEvent>().WithMany()
-                        .HasForeignKey("PracticalLessonEvenId")
+                        .HasForeignKey("PracticalLessonEventId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK_PracticalLessonEvent_Student_Attendance_PracticalLessonEvent"),
                     j =>
                     {
-                        j.HasKey("PracticalLessonEvenId", "StudentId");
+                        j.HasKey("PracticalLessonEventId", "StudentId");
                         j.ToTable("PracticalLessonEvent_Student_Attendance");
                     });
         });
@@ -120,7 +120,7 @@ public partial class CalendaurusContext : DbContext
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_TheoreticalLessonEvent_PracticalLesson");
 
-            entity.HasMany(d => d.Students).WithMany(p => p.TheoreticalLessonEvens)
+            entity.HasMany(d => d.Students).WithMany(p => p.TheoreticalLessonEvents)
                 .UsingEntity<Dictionary<string, object>>(
                     "TheoreticalLessonEventStudentAttendance",
                     r => r.HasOne<Student>().WithMany()
@@ -128,12 +128,12 @@ public partial class CalendaurusContext : DbContext
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK_TheoreticalLessonEvent_Student_Attendance_Student"),
                     l => l.HasOne<TheoreticalLessonEvent>().WithMany()
-                        .HasForeignKey("TheoreticalLessonEvenId")
+                        .HasForeignKey("TheoreticalLessonEventId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK_TheoreticalLessonEvent_Student_Attendance_TheoreticalLessonEvent"),
                     j =>
                     {
-                        j.HasKey("TheoreticalLessonEvenId", "StudentId");
+                        j.HasKey("TheoreticalLessonEventId", "StudentId");
                         j.ToTable("TheoreticalLessonEvent_Student_Attendance");
                     });
         });

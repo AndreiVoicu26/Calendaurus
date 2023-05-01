@@ -1,9 +1,4 @@
 ﻿using Calendaurus.Models.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Calendaurus.Services
 {
@@ -11,5 +6,9 @@ namespace Calendaurus.Services
     {
         Task<Discipline> CreateDiscipline(string name, string faculty, int year);
         Task<Discipline> UpdateDiscipline(long id, string name, string faculty, int year);
+        Task<PracticalLesson> CreatePracticalLesson(long disciplineId, string type, string description);
+        Task<PracticalLesson> UpdatePracticalLesson(long practicalLessonId, string type, string description);
+        Task<TheoreticalLesson> CreateTheoreticalLesson(long disciplineOd, string description);
+        Task<TheoreticalLesson> UpdateTheoreticalLesson(long theoreticalLessonId, string description);
     }
 }
