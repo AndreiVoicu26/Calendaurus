@@ -11,5 +11,8 @@ namespace Calendaurus.Services
     {
         Task<PracticalLessonEvent> CreatePracticalLessonEvent
             (long practicalLessonId, long professorId, string day, TimeSpan startTime, TimeSpan endTime, int occurance, int size);
+        Task<PracticalLessonEvent> UpdatePracticalLessonEvent
+            (long practicalLessonEventId, long practicalLessonId, long professorId, string day, TimeSpan startTime, TimeSpan endTime, int occurance, int size);
+
     }
 }

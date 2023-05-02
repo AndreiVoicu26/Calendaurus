@@ -36,6 +36,29 @@ namespace Calendaurus.Services
                 practicalLesson.PracticalLessonEvents.Add(practicalLessonEvent);
                 _context.PracticalLessonEvents.Add(practicalLessonEvent);
                 await _context.SaveChangesAsync();
+                return practicalLessonEvent;
+            }
+            return null;
+        }
+
+        public async Task<PracticalLessonEvent> UpdatePracticalLessonEvent(long practicalLessonEventId, long practicalLessonId, long professorId, string day, TimeSpan startTime, TimeSpan endTime, int occurance, int size)
+        {
+            var practicalLesson = await _context.PracticalLessons.FirstOrDefaultAsync(pl => pl.Id == practicalLessonId);
+            if(practicalLesson != null)
+            {
+                var practicalLessonEvent = await _context.PracticalLessonEvents.FirstOrDefaultAsync(e => e.Id == practicalLessonEventId);
+                if (practicalLessonEvent != null)
+                {
+                    practicalLessonEvent.ProfessorId = professorId;
+                    practicalLessonEvent.DayOfWeek = day;
+                    practicalLessonEvent.StartTime = startTime;
+                    practicalLessonEvent.EndTime = endTime;
+                    practicalLessonEvent.Occurance = (byte) occurance;
+                    practicalLessonEvent.MaximumSize = (byte) size;
+
+                    await _context.SaveChangesAsync();
+                    return practicalLessonEvent;
+                }
             }
             return null;
         }

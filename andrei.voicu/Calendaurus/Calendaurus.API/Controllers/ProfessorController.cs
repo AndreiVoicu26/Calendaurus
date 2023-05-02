@@ -57,8 +57,8 @@ namespace Calendaurus.API.Controllers
             }
         }
 
-        [HttpPost("create-practical-event")]
-        public async Task<IActionResult> CreatePracticalLessonEvent([FromBody] CreatePracticalLessonEventRequest request)
+        [HttpPost("create-practical-event/{practicalLessonId}")]
+        public async Task<IActionResult> CreatePracticalLessonEvent(long practicalLessonId, [FromBody] CreatePracticalLessonEventRequest request)
         {
             var userEmail = HttpContext.User.Identity.Name;
 
@@ -67,7 +67,33 @@ namespace Calendaurus.API.Controllers
             if (user.Professor is not null)
             {
                 var practicalLessonEvent = _professorService.CreatePracticalLessonEvent
-                    (request.PracticalLessonId, user.Professor.Id, request.DayOfWeek, request.StartTime, request.EndTime, request.Occurance, request.MaximumSize);
+                    (practicalLessonId, user.Professor.Id, request.DayOfWeek, request.StartTime, request.EndTime, request.Occurance, request.MaximumSize);
+                if (practicalLessonEvent != null)
+                {
+                    return Ok(practicalLessonEvent);
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpPut("update-practical-event/{practicalLessonId}/{practicalLessonEventId}")]
+        public async Task<IActionResult> UpdatePracticalLessonEvent(long practicalLessonId, long practicalLessonEventId, [FromBody] UpdatePracticalLessonEventRequest request)
+        {
+            var userEmail = HttpContext.User.Identity.Name;
+
+            var user = await _context.Users.Include(s => s.Professor).Where(u => u.Email == userEmail).SingleOrDefaultAsync();
+
+            if (user.Professor is not null)
+            {
+                var practicalLessonEvent = _professorService.UpdatePracticalLessonEvent
+                    (practicalLessonEventId, practicalLessonId , user.Professor.Id, request.DayOfWeek, request.StartTime, request.EndTime, request.Occurance, request.MaximumSize);
                 if (practicalLessonEvent != null)
                 {
                     return Ok(practicalLessonEvent);
