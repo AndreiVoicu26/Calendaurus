@@ -1,4 +1,6 @@
-﻿using Calendaurus.API.Requests;
+﻿using AutoMapper;
+using Calendaurus.API.Models;
+using Calendaurus.API.Requests;
 using Calendaurus.Models.Models;
 using Calendaurus.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -14,103 +16,124 @@ namespace Calendaurus.API.Controllers
     {
         private readonly CalendaurusContext _context;
         private readonly IDisciplineService _disciplineService;
+        private readonly IMapper _mapper;
 
-        public StudentsController(CalendaurusContext context, IDisciplineService disciplineService)
+        public StudentsController(CalendaurusContext context, IDisciplineService disciplineService, IMapper mapper)
         {
             _context = context;
             _disciplineService = disciplineService;
+            _mapper = mapper;
         }
 
         [HttpGet("disciplines")]
-        public async Task<IActionResult> GetStudentDisciplines()
+        public async Task<IActionResult> GetDisciplines()
         {
-            return Ok();
+            var student = await _context.Students
+                .Include(s => s.User)
+                .Where(s => s.User.Email == User.Identity.Name)
+                .SingleOrDefaultAsync();
+
+            if (student is not null)
+            {
+                var disciplines = await _context.Disciplines
+                .Where(d => d.Year == student.Year)
+                .ToListAsync();
+
+                var results = disciplines.Select(_mapper.Map<DisciplineApiModel>);
+                return Ok(results);
+            }
+
+            return BadRequest();
         }
 
         [HttpGet("practical")]
-        public async Task<IActionResult> GetStudentPracticalLabs()
+        public async Task<IActionResult> GetPracticalLabs()
         {
-            return Ok();
+            var student = await _context.Students
+                .Include(s => s.User)
+                .Where(s => s.User.Email == User.Identity.Name)
+                .SingleOrDefaultAsync();
+
+            if (student is not null)
+            {
+                var discipline = await _context.Disciplines
+                    .Include(d => d.PracticalLessons)
+                    .ThenInclude(lessons => lessons.PracticalLessonEvents)
+                    .Where(d => d.Year == student.Year)
+                    .ToListAsync();
+
+                var practical = discipline.SelectMany(d => d.PracticalLessons);
+                var results = practical.Select(_mapper.Map<PracticalLessonApiModel>);
+                return Ok(results);
+            }
+
+            return BadRequest();
         }
 
         [HttpGet("enrollments")]
-        public async Task<IActionResult> GetStudentPracticalLabEnrollments()
+        public async Task<IActionResult> GetEnrollments()
         {
-            return Ok();
+            var student = await _context.Students
+                .Include(s => s.User)
+                .Where(s => s.User.Email == User.Identity.Name)
+                .SingleOrDefaultAsync();
+
+            if (student is not null)
+            {
+                var enrolledStudent = await _context.Students
+                    .Include(s => s.PracticalLessonEvens)
+                    .ThenInclude(e => e.PracticalLesson)
+                    .Where(s => s.Id == student.Id)
+                    .SingleOrDefaultAsync();
+
+                var results = enrolledStudent.PracticalLessonEvens.Select(e => e.PracticalLesson).Select(_mapper
+                    .Map<PracticalLessonApiModel>);
+                return Ok(results);
+            }
+
+            return BadRequest();
         }
 
         [HttpPost("enrollments")]
-        public async Task<IActionResult> CreateStudentPracticalLabEnrollment([FromBody] EnrollStudentRequest request)
+        public async Task<IActionResult> CreateStudentAttendance([FromBody] EnrollStudentRequest request)
         {
-            return Ok();
-        }
+            var student = await _context.Students
+                .Include(s => s.User)
+                .Where(s => s.User.Email == User.Identity.Name)
+                .SingleOrDefaultAsync();
 
-        [HttpDelete("enrollments/{practicalLessonEventId}")]
-        public async Task<IActionResult> DeleteStudentPracticalLabEnrollment(long practicalLessonEventId)
-        {
-            return Ok();
-        }
-
-        #region old endpoints
-        [HttpGet("{studentId}/disciplines")]
-        public async Task<IActionResult> GetStudentDisciplines(long studentId)
-        {
-            var results = new List<Discipline>();
-
-            var student = await _context.Students.FirstOrDefaultAsync(s => s.Id == studentId);
-            if (student != null)
+            if (student is not null)
             {
-                var year = student.Year;
-                var disciplines = await _context.Disciplines.Where(d => d.Year == year).ToListAsync();
-                results = disciplines;
+                var result = await _disciplineService.EnrollStudentToPracticalLessonEventAsync(student, request.PracticalLessonEventId);
+
+                if (result)
+                {
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
 
-            return Ok(results);
+            return BadRequest();
         }
 
-        [HttpGet("{studentId}/practical")]
-        public async Task<IActionResult> ViewEnrollmentsForStudent(long studentId)
+        [HttpDelete("enrollments/{practicalLessonId}")]
+        public async Task<IActionResult> DeleteStudentAttendance(long practicalLessonId)
         {
-            var studentWithLabs = await _context.Students
-                .Include(s => s.PracticalLessonEvens)
-                .Where(s => s.Id == studentId)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
+            var student = await _context.Students
+                .Include(s => s.User)
+                .Where(s => s.User.Email == User.Identity.Name)
+                .SingleOrDefaultAsync();
 
-            var practicalLessons = studentWithLabs?.PracticalLessonEvens?.ToList() ?? new List<PracticalLessonEvent>();
-
-            return Ok(practicalLessons);
-        }
-
-        [HttpPost("{studentId}/practical")]
-        public async Task<IActionResult> EnrollStudentForPracticalLessonEvent(long studentId, [FromBody] EnrollStudentRequest request)
-        {
-            var success = await _disciplineService.EnrollStudentToPracticalLessonEvent(studentId, request.PracticalLessonEventId);
-
-            if (success)
+            if (student is not null)
             {
+                await _disciplineService.RemoveStudentEnrollment(student, practicalLessonId);
                 return Ok();
             }
-            else
-            {
-                return BadRequest();
-            }
-        }
 
-        [HttpDelete("{studentId}/practical/{practicalLessonId}")]
-        public async Task<IActionResult> RemoveStudentPractical(long studentId, long practicalLessonId)
-        {
-            var success = await _disciplineService.RemoveStudentEnrollment(studentId, practicalLessonId);
-
-            if (success)
-            {
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+            return BadRequest();
         }
-        #endregion
     }
 }

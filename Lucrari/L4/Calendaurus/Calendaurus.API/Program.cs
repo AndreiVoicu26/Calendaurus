@@ -14,6 +14,7 @@ JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 builder.Services.AddTransient<IDisciplineService, DisciplineService>();
 builder.Services.AddDbContext<CalendaurusContext>();
 
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers().AddJsonOptions(o =>
 {
     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
