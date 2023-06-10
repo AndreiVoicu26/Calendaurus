@@ -2,7 +2,7 @@
 {
     public class UpdatePracticalLessonRequest
     {
-        public string Type { get; set; } = null!;
+        public int Type { get; set; }
         public string? Description { get; set; }
     }
 }

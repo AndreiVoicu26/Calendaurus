@@ -9,9 +9,9 @@ namespace Calendaurus.Services.PracticalLessonService
 {
     public interface IPracticalLessonService
     {
-        Task<List<PracticalLesson>> GetPracticalLessonsForDiscipline(long disicpkineId);
-        Task<PracticalLesson> CreatePracticalLesson(long disciplineId, string type, string description);
-        Task<PracticalLesson> UpdatePracticalLesson(long practicalLessonId, string type, string description);
+        Task<List<PracticalLesson>> GetPracticalLessonsForDiscipline(long disciplineId);
+        Task<PracticalLesson> CreatePracticalLesson(long disciplineId, int type, string description);
+        Task<PracticalLesson> UpdatePracticalLesson(long practicalLessonId, int type, string description);
         Task<PracticalLesson> DeletePracticalLesson(long practicalLessonId);
     }
 }

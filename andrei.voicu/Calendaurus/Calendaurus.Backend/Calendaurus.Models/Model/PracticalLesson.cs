@@ -15,7 +15,7 @@ public partial class PracticalLesson
 
     public long DisciplineId { get; set; }
 
-    public string Type { get; set; } = null!;
+    public byte Type { get; set; }
 
     /// <summary>
     /// A short description on what the students will be doing at this practical lesson

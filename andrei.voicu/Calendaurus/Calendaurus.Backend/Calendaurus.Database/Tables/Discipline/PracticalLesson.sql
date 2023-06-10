@@ -2,7 +2,7 @@
 (
 	[Id] BIGINT NOT NULL IDENTITY, 
     [DisciplineId] BIGINT NOT NULL, 
-    [Type] NVARCHAR(20) NOT NULL, 
+    [Type] TINYINT NOT NULL, 
     [Description] NVARCHAR(MAX) NULL, 
     CONSTRAINT [PK_PracticalLesson] PRIMARY KEY ([Id]), 
     CONSTRAINT [FK_PracticalLesson_Discipline] FOREIGN KEY ([DisciplineId]) REFERENCES [Discipline]([Id]),

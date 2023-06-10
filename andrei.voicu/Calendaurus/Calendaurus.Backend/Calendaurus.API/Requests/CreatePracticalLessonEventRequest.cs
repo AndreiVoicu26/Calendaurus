@@ -2,7 +2,7 @@
 {
     public class CreatePracticalLessonEventRequest
     {
-        public string DayOfWeek { get; set; } = null!;
+        public int DayOfWeek { get; set; }
         public TimeSpan StartTime { get; set;}
         public TimeSpan EndTime { get; set;}
         public int Occurance { get; set;}

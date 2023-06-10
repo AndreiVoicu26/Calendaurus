@@ -17,7 +17,7 @@ public partial class PracticalLessonEvent
     public long ProfessorId { get; set; }
 
     [StringLength(20)]
-    public string DayOfWeek { get; set; } = null!;
+    public byte DayOfWeek { get; set; }
 
     public TimeSpan StartTime { get; set; }
 

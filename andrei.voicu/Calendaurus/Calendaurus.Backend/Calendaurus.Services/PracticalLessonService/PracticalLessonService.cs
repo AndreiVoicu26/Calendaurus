@@ -23,7 +23,7 @@ namespace Calendaurus.Services.PracticalLessonService
             return practicalLessons;
         }
 
-        public async Task<PracticalLesson> CreatePracticalLesson(long disciplineId, string type, string description)
+        public async Task<PracticalLesson> CreatePracticalLesson(long disciplineId, int type, string description)
         {
             var discipline = await _context.Disciplines.FirstOrDefaultAsync(d => d.Id == disciplineId);
 
@@ -31,7 +31,7 @@ namespace Calendaurus.Services.PracticalLessonService
             {
                 var practicalLesson = new PracticalLesson()
                 {
-                    Type = type,
+                    Type = (byte)type,
                     Description = description,
                     DisciplineId = disciplineId
                 };
@@ -44,13 +44,13 @@ namespace Calendaurus.Services.PracticalLessonService
             return null;
         }
 
-        public async Task<PracticalLesson> UpdatePracticalLesson(long practicalLessonId, string type, string description)
+        public async Task<PracticalLesson> UpdatePracticalLesson(long practicalLessonId, int type, string description)
         {
             var practicalLesson = await _context.PracticalLessons.FirstOrDefaultAsync(pl => pl.Id == practicalLessonId);
 
             if (practicalLesson != null)
             {
-                practicalLesson.Type = type;
+                practicalLesson.Type = (byte)type;
                 practicalLesson.Description = description;
 
                 await _context.SaveChangesAsync();
