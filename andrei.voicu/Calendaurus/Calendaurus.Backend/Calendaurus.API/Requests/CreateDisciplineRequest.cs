@@ -1,4 +1,6 @@
-﻿namespace Calendaurus.API.Requests
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Calendaurus.API.Requests
 {
     public class CreateDisciplineRequest
     {

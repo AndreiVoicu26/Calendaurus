@@ -9,8 +9,7 @@
     [Occurance] TINYINT NULL, 
     [MaximumSize] TINYINT NULL, 
     CONSTRAINT [PK_PracticalLessonEvent] PRIMARY KEY ([Id]), 
-    CONSTRAINT [FK_PracticalLessonEvent_PracticalLesson] FOREIGN KEY ([PracticalLessonId]) REFERENCES [PracticalLesson]([Id]), 
-    CONSTRAINT [FK_PracticalLessonEvent_Professor] FOREIGN KEY ([ProfessorId]) REFERENCES [Professor]([Id]) 
+    CONSTRAINT [FK_PracticalLessonEvent_PracticalLesson] FOREIGN KEY ([PracticalLessonId]) REFERENCES [PracticalLesson]([Id]) 
 )
 GO
 EXEC sp_addextendedproperty @name = N'MS_Description',

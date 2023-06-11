@@ -6,7 +6,7 @@
 
         public long DisciplineId { get; set; }
 
-        public string Type { get; set; } = null!;
+        public byte Type { get; set; }
 
         public string? Description { get; set; }
 

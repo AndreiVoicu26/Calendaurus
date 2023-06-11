@@ -1,4 +1,4 @@
-﻿using Calendaurus.Models.Model;
+﻿using Calendaurus.Models.Models;
 using System.Net;
 
 namespace Calendaurus.API.Middlewares

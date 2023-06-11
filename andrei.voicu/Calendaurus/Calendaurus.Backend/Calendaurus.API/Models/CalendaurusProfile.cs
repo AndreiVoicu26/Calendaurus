@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using Calendaurus.Models.Model;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Calendaurus.Models.Models;
 
 namespace Calendaurus.API.Models
 {

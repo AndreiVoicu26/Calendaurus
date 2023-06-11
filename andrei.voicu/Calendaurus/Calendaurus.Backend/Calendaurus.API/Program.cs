@@ -1,10 +1,6 @@
 using Calendaurus.API.Middlewares;
-using Calendaurus.Models.Model;
-using Calendaurus.Services.DisciplineService;
-using Calendaurus.Services.PracticalLessonService;
-using Calendaurus.Services.ProfessorService;
-using Calendaurus.Services.Student;
-using Calendaurus.Services.TheoreticalLessonService;
+using Calendaurus.Models.Models;
+using Calendaurus.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
@@ -16,12 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 builder.Services.AddTransient<IDisciplineService, DisciplineService>();
-builder.Services.AddTransient<IPracticalLessonService, PracticalLessonService>();
-builder.Services.AddTransient<ITheoreticalLessonService, TheoreticalLessonService>();
-builder.Services.AddTransient<IStudentService, StudentService>();
-builder.Services.AddTransient<IProfessorService, ProfessorService>();
 builder.Services.AddDbContext<CalendaurusContext>();
 
+builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddControllers().AddJsonOptions(o =>
 {
     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
@@ -66,7 +59,7 @@ builder.Services
         builder.Configuration.Bind("AzureAd", options);
         options.TokenValidationParameters.NameClaimType = "preferred_username";
     },
-    options => builder.Configuration.Bind("AzureAd", options));
+    options => builder.Configuration.Bind("AzureAd", options)); ;
 
 var app = builder.Build();
 
@@ -86,11 +79,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
 app.UseAuthentication();
 app.UseMiddleware<CalendaurusAuthorizationMiddleware>();
 app.UseAuthorization();
-
-app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.MapControllers();
 
