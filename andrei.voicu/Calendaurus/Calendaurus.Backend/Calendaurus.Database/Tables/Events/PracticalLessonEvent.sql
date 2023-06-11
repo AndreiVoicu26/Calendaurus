@@ -3,7 +3,7 @@
 	[Id] BIGINT NOT NULL IDENTITY, 
     [PracticalLessonId] BIGINT NOT NULL, 
     [ProfessorId] BIGINT NOT NULL, 
-    [DayOfWeek] TINYINT NOT NULL, 
+    [DayOfWeek] NVARCHAR(20) NOT NULL, 
     [StartTime] TIME NOT NULL, 
     [EndTime] TIME NOT NULL, 
     [Occurance] TINYINT NULL, 

@@ -12,9 +12,9 @@ namespace Calendaurus.Services.ProfessorService
     {
         Task<List<PracticalLessonEvent>> GetProfessorPracticalEvents(long professorId);
         Task<PracticalLessonEvent> CreatePracticalLessonEvent
-            (long practicalLessonId, long professorId, int day, TimeSpan startTime, TimeSpan endTime, int occurance, int size);
+            (long practicalLessonId, long professorId, string day, TimeSpan startTime, TimeSpan endTime, int occurance, int size);
         Task<PracticalLessonEvent> UpdatePracticalLessonEvent
-            (long practicalLessonEventId, long practicalLessonId, long professorId, int day, TimeSpan startTime, TimeSpan endTime, int occurance, int size);
+            (long practicalLessonEventId, long practicalLessonId, long professorId, string day, TimeSpan startTime, TimeSpan endTime, int occurance, int size);
         Task<PracticalLessonEvent> DeletePracticalLessonEvent(long practicalLessonEventId);
         Task<List<TheoreticalLessonEvent>> GetProfessorTheoreticalEvents(long professorId);
     }

@@ -30,7 +30,7 @@ namespace Calendaurus.Services.ProfessorService
             return practicalLessonEvents;
         }
 
-        public async Task<PracticalLessonEvent> CreatePracticalLessonEvent(long practicalLessonId, long professorId, int day, TimeSpan startTime, TimeSpan endTime, int occurance, int size)
+        public async Task<PracticalLessonEvent> CreatePracticalLessonEvent(long practicalLessonId, long professorId, string day, TimeSpan startTime, TimeSpan endTime, int occurance, int size)
         {
             var practicalLesson = await _context.PracticalLessons.FirstOrDefaultAsync(pl => pl.Id == practicalLessonId);
             if (practicalLesson != null)
@@ -39,7 +39,7 @@ namespace Calendaurus.Services.ProfessorService
                 {
                     PracticalLessonId = practicalLessonId,
                     ProfessorId = professorId,
-                    DayOfWeek = (byte)day,
+                    DayOfWeek = day,
                     StartTime = startTime,
                     EndTime = endTime,
                     Occurance = (byte)occurance,
@@ -53,7 +53,7 @@ namespace Calendaurus.Services.ProfessorService
             return null;
         }
 
-        public async Task<PracticalLessonEvent> UpdatePracticalLessonEvent(long practicalLessonEventId, long practicalLessonId, long professorId, int day, TimeSpan startTime, TimeSpan endTime, int occurance, int size)
+        public async Task<PracticalLessonEvent> UpdatePracticalLessonEvent(long practicalLessonEventId, long practicalLessonId, long professorId, string day, TimeSpan startTime, TimeSpan endTime, int occurance, int size)
         {
             var practicalLesson = await _context.PracticalLessons.FirstOrDefaultAsync(pl => pl.Id == practicalLessonId);
             if (practicalLesson != null)
@@ -62,7 +62,7 @@ namespace Calendaurus.Services.ProfessorService
                 if (practicalLessonEvent != null)
                 {
                     practicalLessonEvent.ProfessorId = professorId;
-                    practicalLessonEvent.DayOfWeek = (byte)day;
+                    practicalLessonEvent.DayOfWeek = day;
                     practicalLessonEvent.StartTime = startTime;
                     practicalLessonEvent.EndTime = endTime;
                     practicalLessonEvent.Occurance = (byte)occurance;

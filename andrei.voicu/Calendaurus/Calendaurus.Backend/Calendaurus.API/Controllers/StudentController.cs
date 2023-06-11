@@ -41,6 +41,25 @@ namespace Calendaurus.API.Controllers
             }
         }
 
+        [HttpGet("practical")]
+        public async Task<IActionResult> GetStudentPracticalLessons()
+        {
+            var userEmail = HttpContext.User.Identity.Name;
+
+            var user = await _context.Users.Include(s => s.Student).Where(u => u.Email == userEmail).SingleOrDefaultAsync();
+
+            if (user.Student is not null)
+            {
+                var practicalLessons = await _studentService.GetStudentPracticalLessons(user.Student.Year);
+                return Ok(practicalLessons);
+ 
+            }
+            else
+            {
+                return Forbid();
+            }
+        }
+
         [HttpGet("practical/{disciplineId}")]
         public async Task<IActionResult> GetStudentPracticalLessonsForDiscipline(long disciplineId)
         {
@@ -59,6 +78,24 @@ namespace Calendaurus.API.Controllers
                 {
                     return BadRequest();
                 }
+            }
+            else
+            {
+                return Forbid();
+            }
+        }
+
+        [HttpGet("practical-events")]
+        public async Task<IActionResult> GetStudentPracticalLessonEvents()
+        {
+            var userEmail = HttpContext.User.Identity.Name;
+
+            var user = await _context.Users.Include(s => s.Student).Where(u => u.Email == userEmail).SingleOrDefaultAsync();
+
+            if (user.Student is not null)
+            {
+                var practicalLessonEvents = await _studentService.GetStudentPracticalLessonsEvents(user.Student.Year);
+                return Ok(practicalLessonEvents);
             }
             else
             {

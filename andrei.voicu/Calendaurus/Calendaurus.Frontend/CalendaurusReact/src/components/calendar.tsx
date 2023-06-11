@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import { Button } from "./button";
 import { useMsal } from "@azure/msal-react";
-import { prepareToken } from "../app/authUtils";
-import { useEffect } from "react";
-import axios from "axios";
+import * as React from "react";
+import { Discipline, PracticalLesson } from "../actions/models";
+import { TimeColumn } from "./Calendar/TimeColumn";
+import { DayColumn } from "./Calendar/DayColumn";
+import * as loaders from "../actions/api";
 
 const Root = styled.div`
   display: grid;
@@ -16,11 +18,11 @@ const Header = styled.div`
   display: grid;
   gap: 0.5rem;
   grid-template-columns: max-content 1fr max-content;
-  padding: 0.5rem;
+  padding: 0.2rem;
+  padding-left: 0.7rem;
   border-bottom: 1px solid mediumpurple;
-`;
-const Table = styled.table`
-  width: 100%;
+  font-size: 1.5rem;
+  background-color: #0C1137;
 `;
 
 export interface AuthenticatedProps {
@@ -29,41 +31,99 @@ export interface AuthenticatedProps {
 
 const Content = styled.div`
   overflow: auto;
+  display: flex;
   tr {
     height: 2rem;
     border-bottom: 1px solid mediumpurple;
   }
 `;
 
+export interface CalendarState {
+  disciplines: Discipline[];
+  studentDisciplines: Discipline[];
+  practicalLessons: PracticalLesson[];
+  enrollments: PracticalLesson[];
+}
+
+const weekdays: string[] = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+];
+
 export function Calendar(props: AuthenticatedProps) {
   const { onSignOut } = props;
 
   const { instance } = useMsal();
-  const apiUrl = "";
+  const [currentState, setCurrentState] = React.useState<CalendarState>({
+    disciplines: [],
+    studentDisciplines: [],
+    practicalLessons: [],
+    enrollments: [],
+  });
 
-  const getApiData = async () => {
-    const token = await prepareToken(instance);
-    const headers = new Headers();
-    const bearer = "Bearer " + token;
+  const loadStudentEnrollments = React.useCallback( () => {
+    loaders.loadStudentEnrollments(
+      instance,
+      (enrollments: PracticalLesson[]) => {
+        setCurrentState((prevState) => {
+          return {
+            ...prevState,
+            enrollments,
+          };
+        });
+      }
+    );
+  }, [instance]);
 
-    const options = {
-      method: "GET",
-      headers: headers,
-    };
+  React.useEffect(() => {
+    loaders.loadDisciplines(instance, (disciplines: Discipline[]) => {
+      setCurrentState((prevState) => {
+        return {
+          ...prevState,
+          disciplines,
+        };
+      });
+    });
+    loaders.loadStudentDisciplines(
+      instance,
+      (studentDisciplines: Discipline[]) => {
+        setCurrentState((prevState) => {
+          return {
+            ...prevState,
+            studentDisciplines,
+          };
+        });
+      }
+    );
+    loaders.loadStudentPractical(
+      instance,
+      (practicalLessons: PracticalLesson[]) => {
+        setCurrentState((prevState) => {
+          return {
+            ...prevState,
+            practicalLessons,
+          };
+        });
+      }
+    );
+    loadStudentEnrollments();
+  }, [instance, loadStudentEnrollments]);
 
-    headers.append("Authorization", bearer);
-
-    const data = await fetch(apiUrl, options).then((d) => d.json());
-  };
-
-  useEffect(() => {
-    axios.get('https://localhost:7077/Student/disciplines').then(res => {
-      if(res.data.status == true)
-          console.log(res.data);
-        }).catch(error => {
-          // Handle the error
-          console.error(error);
-        })}, []);
+  const weekdaysColumns = weekdays.map((day) => {
+    return (
+      <DayColumn
+        key={day}
+        day={day}
+        practicalLessons={currentState.practicalLessons}
+        studentDisciplines={currentState.studentDisciplines}
+        enrollments={currentState.enrollments}
+        updateIsEnrolled={loadStudentEnrollments}
+      />
+    );
+  });
 
   return (
     <Root>
@@ -73,12 +133,11 @@ export function Calendar(props: AuthenticatedProps) {
         <Button onClick={onSignOut}>Log Out</Button>
       </Header>
       <Content>
-        <Table>
-          <thead>
-            <th>Calendar</th>
-          </thead>
-          <tbody></tbody>
-        </Table>
+        <TimeColumn 
+          studentDisciplines={currentState.studentDisciplines}
+          enrollments={currentState.enrollments}
+        />
+        {weekdaysColumns}
       </Content>
     </Root>
   );

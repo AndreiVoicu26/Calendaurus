@@ -23,6 +23,13 @@ namespace Calendaurus.Services.Student
             return disciplines;
         }
 
+        public async Task<List<PracticalLesson>> GetStudentPracticalLessons(int year)
+        {
+            var disciplines = await _context.Disciplines.Where(d => d.Year == year).ToListAsync();
+            var practicalLessons = await _context.PracticalLessons.Where(pl => disciplines.Contains(pl.Discipline)).ToListAsync();
+            return practicalLessons;
+        }
+
         public async Task<List<PracticalLesson>> GetStudentPracticalLessonsForDiscipline(int year, long disciplineId)
         {
             var discipline = await _context.Disciplines.Where(d => d.Year == year).FirstOrDefaultAsync(d => d.Id == disciplineId);
@@ -32,6 +39,19 @@ namespace Calendaurus.Services.Student
                 return practicalLessons;
             }
             return null;
+        }
+
+        public async Task<List<PracticalLessonEvent>> GetStudentPracticalLessonsEvents(int year)
+        {
+            var disciplines = await _context.Disciplines.Where(d => d.Year == year).ToListAsync();
+            var practicalLessons = await _context.PracticalLessons.Where(pl => disciplines.Contains(pl.Discipline)).ToListAsync();
+            var events = new List<PracticalLessonEvent>();
+            foreach(var pl in practicalLessons)
+            {
+                var practicalLessonEvents = await _context.PracticalLessonEvents.Where(e => e.PracticalLessonId == pl.Id).ToListAsync();
+                events.AddRange(practicalLessonEvents);
+            }
+            return events;
         }
 
         public async Task<List<PracticalLessonEvent>> GetStudentPracticalLessonsEventsForPracticalLesson(int year, long practicalLessonId)

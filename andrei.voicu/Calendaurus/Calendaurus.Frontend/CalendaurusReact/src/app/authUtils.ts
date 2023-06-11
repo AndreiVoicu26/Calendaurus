@@ -7,5 +7,6 @@ export async function prepareToken(instance: IPublicClientApplication) {
     account: account,
   };
   const tokenResponse = await instance.acquireTokenSilent(accessTokenRequest);
+  console.log(tokenResponse.idToken);
   return tokenResponse.idToken;
 }
